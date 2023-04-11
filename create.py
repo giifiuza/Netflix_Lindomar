@@ -1,6 +1,17 @@
-from conectar import conexao, cursor
+# from conectar import conexao, cursor
 from prettytable import PrettyTable
 
+import mysql.connector
+
+conexao = mysql.connector.connect(
+    host='localhost',
+    database='Netflix',
+    user='root',
+    password=''
+)
+
+
+cursor = conexao.cursor()
 
 def cadastrar_filmes():
     filme = input('Digite o filme que queira cadastrar: ')
@@ -23,29 +34,29 @@ def cadastrar_filmes():
     print(tab)
 
 
-def cadastrar_usuario():
-    usuarios = []
-    usuario = input('Digite nome de usuario: ')
-    email = input("Digite o email: ")
-    print("Plano: basic | medium | premium |")
-    plano = input("Digite o plano: ")
-    print("Admin | User")
-    tipo = input("Tipo de conta: ")
-    idade = input("Digite sua idade: ")
-
+def cadastrar_usuario(usuario, email, plano, tipo, idade):
     cadastro = f"""INSERT INTO Usuarios(nome, email, plano, tipo, idade)
      values
      ('{usuario}', '{email}', '{plano}', '{tipo}', {idade})"""
-
-    usuarios.append(usuario)
     cursor.execute(cadastro)
     conexao.commit()
-    return usuarios
+
+    sql = 'select * from Usuarios'
+    cursor.execute(sql)
+    linhas = cursor.fetchall() #fetchall coloca dentro de uma lista
+    tabela = PrettyTable()
+    tabela.field_names = ["ID", "Usuário", "Email", "Plano", "Tipo", "Idade"]
+
+    for linha in linhas:
+        tabela.add_row(linha)
+    print(tabela)
 
 
 # def login(usuarios):
 #     usuario = input('Digite nome de usuario: ')
 #     if usuario in usuarios:
+
+
 
 
 
